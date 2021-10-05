@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30803.129
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterCalculator", "MasterCalculator.csproj", "{4063FFFC-374F-4407-B627-02513188593E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4063FFFC-374F-4407-B627-02513188593E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4063FFFC-374F-4407-B627-02513188593E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4063FFFC-374F-4407-B627-02513188593E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4063FFFC-374F-4407-B627-02513188593E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A70F68AB-0C49-4E5D-8A33-A96EBA89939D}
+	EndGlobalSection
+EndGlobal
