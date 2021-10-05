@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReverseShellService", "ReverseShellService\ReverseShellService.csproj", "{C309D93F-D60E-4059-BDAB-46DE0917DB25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReverseShellApplication", "ReverseShellApplication\ReverseShellApplication.csproj", "{4461F827-D8A9-4527-8334-5229FFAD7DAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C309D93F-D60E-4059-BDAB-46DE0917DB25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C309D93F-D60E-4059-BDAB-46DE0917DB25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C309D93F-D60E-4059-BDAB-46DE0917DB25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C309D93F-D60E-4059-BDAB-46DE0917DB25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4461F827-D8A9-4527-8334-5229FFAD7DAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4461F827-D8A9-4527-8334-5229FFAD7DAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4461F827-D8A9-4527-8334-5229FFAD7DAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4461F827-D8A9-4527-8334-5229FFAD7DAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {348847FD-3B74-42CB-97F6-6F8D4E68E890}
+	EndGlobalSection
+EndGlobal
