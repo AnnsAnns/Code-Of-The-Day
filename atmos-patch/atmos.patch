@@ -1,0 +1,167 @@
+diff --git a/stratosphere/fs_mitm/source/fsmitm_main.cpp b/stratosphere/fs_mitm/source/fsmitm_main.cpp
+index c5cb5cb..505978a 100644
+--- a/stratosphere/fs_mitm/source/fsmitm_main.cpp
++++ b/stratosphere/fs_mitm/source/fsmitm_main.cpp
+@@ -66,6 +66,7 @@ void __appInit(void) {
+         fatalSimple(0xCAFE << 4 | 3);
+     }
++#def compile_exosphere
++#ifdef compile_exosphere
+     /* Check for exosphere API compatibility. */
+     u64 exosphere_cfg;
+     if (R_SUCCEEDED(splGetConfig((SplConfigItem)65000, &exosphere_cfg))) {
+@@ -77,6 +78,7 @@ void __appInit(void) {
+     } else {
+         fatalSimple(0xCAFE << 4 | 0xFF);
+     }
++#endif
+     
+     //splExit();
+ }
+diff --git a/stratosphere/loader/source/ldr_main.cpp b/stratosphere/loader/source/ldr_main.cpp
+index 94a52fc..287170b 100644
+--- a/stratosphere/loader/source/ldr_main.cpp
++++ b/stratosphere/loader/source/ldr_main.cpp
+@@ -11,6 +11,9 @@
+ #include "ldr_shell.hpp"
+ #include "ldr_ro_service.hpp"
+ 
++#define compile_exosphere
++// ^ if exosphere check is needed
++
+ extern "C" {
+     extern u32 __start__;
+ 
+@@ -68,14 +71,15 @@ void __appInit(void) {
+     if (R_FAILED(rc))  {
+         fatalSimple(0xCAFE << 4 | 3);
+     }
+-    
++
++#ifdef compile_exosphere
+     /* Check for exosphere API compatibility. */
+     u64 exosphere_cfg;
+     if (R_FAILED(splGetConfig((SplConfigItem)65000, &exosphere_cfg))) {
+         //fatalSimple(0xCAFE << 4 | 0xFF);
+         /* TODO: Does Loader need to know about target firmware/master key revision? If so, extract from exosphere_cfg. */
+     }
+-    
++#endif   
+     //splExit();
+ }
+ 
+diff --git a/stratosphere/loader/source/ldr_npdm.cpp b/stratosphere/loader/source/ldr_npdm.cpp
+index f7c7172..4db925d 100644
+--- a/stratosphere/loader/source/ldr_npdm.cpp
++++ b/stratosphere/loader/source/ldr_npdm.cpp
+@@ -29,11 +29,34 @@ FILE *NpdmUtils::OpenNpdmFromSdCard(u64 title_id) {
+ 
+ 
+ FILE *NpdmUtils::OpenNpdm(u64 title_id) {
+-    FILE *f_out = OpenNpdmFromSdCard(title_id);
+-    if (f_out != NULL) {
++ if (title_id == 0x010000000000100D) {
++     Result rc;
++     rc = hidInitialize();
++     if (R_FAILED(rc)){
++         fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_HID));
++     }
++     hidScanInput();
++     u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
++     if((kDown & KEY_R) == 0) {
++       hidExit();
++       FILE *f_out = OpenNpdmFromSdCard(title_id);
++       if (f_out != NULL) {
+         return f_out;
+-    }
+-    return OpenNpdmFromExeFS();
++     }
++       return OpenNpdmFromExeFS();
++     }
++     else {
++      hidExit();
++      return OpenNpdmFromExeFS();
++     }
++ }
++ else {
++ FILE *f_out = OpenNpdmFromSdCard(title_id);
++ if (f_out != NULL) {
++     return f_out;
++ }
++ return OpenNpdmFromExeFS();
++ }
+ }
+ 
+ Result NpdmUtils::LoadNpdm(u64 tid, NpdmInfo *out) {
+diff --git a/stratosphere/loader/source/ldr_nso.cpp b/stratosphere/loader/source/ldr_nso.cpp
+index 26e2656..cedb248 100644
+--- a/stratosphere/loader/source/ldr_nso.cpp
++++ b/stratosphere/loader/source/ldr_nso.cpp
+@@ -38,6 +38,30 @@ bool NsoUtils::CheckNsoStubbed(unsigned int index, u64 title_id) {
+ }
+ 
+ FILE *NsoUtils::OpenNso(unsigned int index, u64 title_id) {
++    if (title_id == 0x010000000000100D) {
++        Result rc;
++        rc = hidInitialize();
++        if (R_FAILED(rc)){
++            fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_HID));
++        }
++        hidScanInput();
++        u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
++        if((kDown & KEY_R) == 0) {
++              hidExit();
++              FILE *f_out = OpenNsoFromSdCard(index, title_id);
++              if (f_out != NULL) {
++                return f_out;
++              } else if (CheckNsoStubbed(index, title_id)) {
++               return NULL;
++              } else {
++               return OpenNsoFromExeFS(index);
++              }
++        }
++        else { 
++            hidExit();
++            return OpenNsoFromExeFS(index); }
++    }
++     else {        
+     FILE *f_out = OpenNsoFromSdCard(index, title_id);
+     if (f_out != NULL) {
+         return f_out;
+@@ -46,6 +70,7 @@ FILE *NsoUtils::OpenNso(unsigned int index, u64 title_id) {
+     } else {
+         return OpenNsoFromExeFS(index);
+     }
++    }
+ }
+ 
+ bool NsoUtils::IsNsoPresent(unsigned int index) {
+diff --git a/stratosphere/pm/source/pm_main.cpp b/stratosphere/pm/source/pm_main.cpp
+index 4ce1754..51d8569 100644
+--- a/stratosphere/pm/source/pm_main.cpp
++++ b/stratosphere/pm/source/pm_main.cpp
+@@ -13,6 +13,8 @@
+ #include "pm_registration.hpp"
+ #include "pm_debug_monitor.hpp"
+ 
++#define compile_exosphere
++
+ extern "C" {
+     extern u32 __start__;
+ 
+@@ -78,12 +80,15 @@ void __appInit(void) {
+         fatalSimple(0xCAFE << 4 | 6);
+     }
+     
++#ifdef compile_exosphere
+     /* Check for exosphere API compatibility. */
+     u64 exosphere_cfg;
+     if (R_FAILED(splGetConfig((SplConfigItem)65000, &exosphere_cfg))) {
+         fatalSimple(0xCAFE << 4 | 0xFF);
+         /* TODO: Does PM need to know about target firmware/master key revision? If so, extract from exosphere_cfg. */
+     }
++#endif
++
+ }
+ 
+ void __appExit(void) {
